@@ -4,7 +4,7 @@ from core.spawn import Spawn
 
 def main():
     json_manager.read_json_map("test_map.json")
-    print("\n")
+    #print("\n")
     #json_manager.modify_json_map("test_map.json", "name", "Jelling", "Jelling Guard")
     print("\n")
     json_manager.add_spawn('test_map.json', Spawn('jelling', 'Jelling', {'x': -74.0, 'y': -139.6, 'z': -98}, 1, 30))

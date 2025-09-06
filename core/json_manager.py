@@ -1,13 +1,16 @@
 import json
 import os
 
-from core.spawn import Spawn
+from core.spawn import Spawn, SpawnEncoder
 
 
 def read_json_map(file: str):
     full_path = os.path.join("./data/" + file)
     with open(full_path) as f:
         game_map = json.load(f)
+
+        if game_map is None:
+            return
 
         for key in game_map.keys():
             if key == 'monster_spawns':
@@ -38,4 +41,7 @@ def add_spawn(file: str, spawn: Spawn):
 
         for key in game_map.keys():
             if key == 'monster_spawns':
-                game_map[key].append(spawn)
+                game_map[key].append(json.dumps(spawn, cls=SpawnEncoder))
+
+    with open(full_path, 'w') as write_file:
+        json.dump(game_map, write_file)
