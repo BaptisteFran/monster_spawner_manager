@@ -10,12 +10,9 @@ def read_json_map(file: str):
         game_map = json.load(f)
 
         if game_map is None:
-            return
+            return None
 
-        for key in game_map.keys():
-            if key == 'monster_spawns':
-                for monster_spawn in game_map[key]:
-                    print(monster_spawn)
+        return game_map
 
 
 def modify_json_map(file: str, attribute: str, old_value: str, new_value: str):
@@ -64,3 +61,25 @@ def delete_spawn(file: str, monster_name: str, position: dict):
 
     with open(full_path, 'w') as write_file:
         json.dump(game_map, write_file)
+
+
+def populate_hcol_table(map_name: str) -> list:
+    game_map = read_json_map(map_name)
+    headerH = []
+    for key in game_map:
+        for value in game_map[key]:
+            if key == "monster_spawns":
+                for i in value:
+                    headerH.append(i) if i not in headerH else False
+    return headerH
+
+
+def populate_vcol_table(map_name: str) -> list:
+    game_map = read_json_map(map_name)
+    headerV = []
+    for key in game_map:
+        for value in game_map[key]:
+            if key == "monster_spawns":
+                headerV.append(value["name"])
+
+    return headerV
