@@ -2,7 +2,8 @@ from PyQt6.QtCore import QSize, Qt
 
 from core import json_manager
 from PyQt6.QtWidgets import QApplication, QWidget, QMainWindow, QPushButton, QLabel,\
-    QTabWidget, QGridLayout, QFormLayout, QTableWidget, QLineEdit, QTableWidgetItem, QLayout, QHBoxLayout, QVBoxLayout
+    QTabWidget, QGridLayout, QFormLayout, QTableWidget, QLineEdit, QTableWidgetItem, QLayout, QHBoxLayout, QVBoxLayout, \
+    QHeaderView
 
 from core.json_manager import read_json_map, populate_hcol_table, populate_vcol_table
 
@@ -49,11 +50,11 @@ class MainWindow(QMainWindow):
         tabs = QTabWidget()
         tabs.setTabPosition(QTabWidget.TabPosition.North)
 
-        show_page = QWidget(tabs)
-        show_page_layout = QFormLayout(show_page)
+        show_page = QWidget()
+        show_page_layout = QVBoxLayout(show_page)
         show_page.setLayout(show_page_layout)
 
-        self.table = QTableWidget(tabs)
+        self.table = QTableWidget()
 
         table_hheaders = populate_hcol_table("test_map.json")
         table_vheaders = populate_vcol_table("test_map.json")
@@ -63,15 +64,17 @@ class MainWindow(QMainWindow):
         self.table.setVerticalHeaderLabels(table_vheaders)
         self.table.setHorizontalHeaderLabels(table_hheaders)
 
-        add_page = QWidget(tabs)
+        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+
+        add_page = QWidget()
         add_page_layout = QVBoxLayout(add_page)
         add_page.setLayout(add_page_layout)
 
-        modify_page = QWidget(tabs)
+        modify_page = QWidget()
         modify_page_layout = QVBoxLayout(modify_page)
         modify_page.setLayout(modify_page_layout)
 
-        delete_page = QWidget(tabs)
+        delete_page = QWidget()
         delete_page_layout = QVBoxLayout(delete_page)
         delete_page.setLayout(delete_page_layout)
 
@@ -94,11 +97,13 @@ class MainWindow(QMainWindow):
         delete_page_layout.addWidget(self.delete_label)
         delete_page_layout.addWidget(btn_delete)
 
-        main_layout.addWidget(tabs)
+        main_layout.addWidget(tabs, 0, 0, 1, 1)
+        main_layout.setRowStretch(0, 1)
+        main_layout.setColumnStretch(0, 1)
 
         self.setCentralWidget(container)
 
-        self.setFixedSize(QSize(800, 600))
+        self.setFixedSize(QSize(1024, 960))
 
 
     def populate_map(self):
