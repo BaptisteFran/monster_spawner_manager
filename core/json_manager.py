@@ -30,7 +30,7 @@ def modify_json_map(file: str, attribute: str, old_value: str, new_value: str):
                         monster_spawn[attribute] = new_value
 
         with open(full_path, 'w') as write_file:
-            json.dump(map, write_file)
+            json.dump(game_map, write_file)
 
 
 def add_spawn(file: str, spawn: Spawn):
