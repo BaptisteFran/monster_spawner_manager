@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import QApplication, QWidget, QMainWindow, QPushButton, QLa
     QTabWidget, QGridLayout, QFormLayout, QTableWidget, QLineEdit, QTableWidgetItem, QLayout, QHBoxLayout, QVBoxLayout, \
     QHeaderView
 
-from core.json_manager import read_json_map, populate_hcol_table, populate_vcol_table
+from core.json_manager import populate_hcol_table, populate_vcol_table
 
 
 def init_window():
@@ -35,14 +35,13 @@ class MainWindow(QMainWindow):
 
         main_layout = QGridLayout(container)
 
-        self.read_label.setText("Show existing spawns")
+        self.read_label.setText("Put a map name to show all spawns")
         self.add_label.setText("Add new spawn")
         self.modify_label.setText("Modify existing spawn")
         self.delete_label.setText("Delete existing spawn")
 
         btn_read = QPushButton("Show all spawns")
         btn_read.clicked.connect(self.populate_map)
-
         btn_modify = QPushButton("Modify spawn")
         btn_add = QPushButton("Add spawn")
         btn_delete = QPushButton("Delete spawn")
@@ -66,36 +65,17 @@ class MainWindow(QMainWindow):
 
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
 
-        add_page = QWidget()
-        add_page_layout = QVBoxLayout(add_page)
-        add_page.setLayout(add_page_layout)
-
-        modify_page = QWidget()
-        modify_page_layout = QVBoxLayout(modify_page)
-        modify_page.setLayout(modify_page_layout)
-
-        delete_page = QWidget()
-        delete_page_layout = QVBoxLayout(delete_page)
-        delete_page.setLayout(delete_page_layout)
-
         tabs.addTab(show_page, "Map spawns")
-        tabs.addTab(add_page, "Add spawn")
-        tabs.addTab(modify_page, "Modify spawn")
-        tabs.addTab(delete_page, "Delete spawn")
 
         show_page_layout.addWidget(self.read_label)
         show_page_layout.addWidget(self.map_name)
-        show_page_layout.addWidget(btn_read)
+        button_row = QHBoxLayout()
+        button_row.addWidget(btn_read)
+        button_row.addWidget(btn_add)
+        button_row.addWidget(btn_modify)
+        button_row.addWidget(btn_delete)
+        show_page_layout.addLayout(button_row)
         show_page_layout.addWidget(self.table)
-
-        add_page_layout.addWidget(self.add_label)
-        add_page_layout.addWidget(btn_add)
-
-        modify_page_layout.addWidget(self.modify_label)
-        modify_page_layout.addWidget(btn_modify)
-
-        delete_page_layout.addWidget(self.delete_label)
-        delete_page_layout.addWidget(btn_delete)
 
         main_layout.addWidget(tabs, 0, 0, 1, 1)
         main_layout.setRowStretch(0, 1)
@@ -103,7 +83,7 @@ class MainWindow(QMainWindow):
 
         self.setCentralWidget(container)
 
-        self.setFixedSize(QSize(1024, 960))
+        self.setFixedSize(QSize(1280, 800))
 
 
     def populate_map(self):
@@ -123,10 +103,7 @@ class MainWindow(QMainWindow):
                         if cle == "name":
                             self.table.setItem(row_count, 1, QTableWidgetItem(valeur))
                         if cle == "position":
-                            position = ""
-                            for i,k in valeur.items():
-                                position = position + " " + str(k)
-                            self.table.setItem(row_count, 2, QTableWidgetItem(position))
+                            self.table.setItem(row_count, 2, QTableWidgetItem(str(valeur)))
                         if cle == "level":
                             self.table.setItem(row_count, 3, QTableWidgetItem(str(valeur)))
                         if cle == "respawn_time":
