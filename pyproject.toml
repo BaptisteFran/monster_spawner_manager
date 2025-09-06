@@ -4,5 +4,5 @@ version = "0.1.0"
 description = "Monster spawn manager for Project Pink"
 requires-python = ">=3.9"
 dependencies = [
-    "customtkinter>=5.2.2",
+    "pyqt6>=6.9.1",
 ]

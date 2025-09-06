@@ -1,27 +1,42 @@
-import customtkinter as ctk
 from core import json_manager
+from PyQt6.QtWidgets import QApplication, QWidget, QMainWindow, QPushButton, QLabel, QLineEdit, QVBoxLayout
+
 
 def btn_read_json():
     json_manager.read_json_map("test_map.json")
 
 def init_window():
-    ctk.set_appearance_mode("light")
-    ctk.set_default_color_theme("blue")
+    # Pass sys.argv to allow command line arguments for your app
+    app = QApplication([])
 
-    app = ctk.CTk()
-    app.title("Project Pink Spawn Manager")
-    app.geometry("800x600")
+    window = MainWindow()
+    window.show()
 
-    btn_read = ctk.CTkButton(
-        app,
-        text="Read JSON",
-        command=btn_read_json,
-        width=140,
-        height=28,
-        fg_color="blue",
-        text_color="white"
-    )
-    btn_read.pack(side="top", fill="x", padx=20, pady=20)
+    app.exec()
 
-    app.update()
-    app.mainloop()
+
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+
+        self.setWindowTitle("Project Pink Sapwn Manager")
+        self.label = QLabel()
+        self.input = QLineEdit()
+
+        self.label.setText("Show existing spawns")
+
+        btn_read = QPushButton("Read JSON")
+        btn_read.clicked.connect(btn_read_json)
+
+        layout = QVBoxLayout()
+        layout.addWidget(self.label)
+        layout.addWidget(self.input)
+        layout.addWidget(btn_read)
+
+        container = QWidget()
+        container.setLayout(layout)
+
+
+        self.setCentralWidget(container)
+
+        self.setFixedSize(800, 600)
