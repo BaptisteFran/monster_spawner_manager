@@ -24,9 +24,6 @@ class MainWindow(QMainWindow):
 
         self.setWindowTitle("Project Pink Spawn Manager")
         self.read_label = QLabel()
-        self.add_label = QLabel()
-        self.modify_label = QLabel()
-        self.delete_label = QLabel()
 
         self.map_name = QLineEdit()
         self.map_name.setPlaceholderText("test_map")
@@ -36,15 +33,13 @@ class MainWindow(QMainWindow):
         main_layout = QGridLayout(container)
 
         self.read_label.setText("Put a map name to show all spawns")
-        self.add_label.setText("Add new spawn")
-        self.modify_label.setText("Modify existing spawn")
-        self.delete_label.setText("Delete existing spawn")
 
         btn_read = QPushButton("Show all spawns")
         btn_read.clicked.connect(self.populate_map)
         btn_modify = QPushButton("Modify spawn")
         btn_add = QPushButton("Add spawn")
         btn_delete = QPushButton("Delete spawn")
+        btn_save = QPushButton("Save map")
 
         tabs = QTabWidget()
         tabs.setTabPosition(QTabWidget.TabPosition.North)
@@ -74,6 +69,7 @@ class MainWindow(QMainWindow):
         button_row.addWidget(btn_add)
         button_row.addWidget(btn_modify)
         button_row.addWidget(btn_delete)
+        button_row.addWidget(btn_save)
         show_page_layout.addLayout(button_row)
         show_page_layout.addWidget(self.table)
 
