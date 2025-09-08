@@ -7,79 +7,62 @@ from core.spawn import Spawn
 def read_json_map(file: str):
     full_path = os.path.join("./data/" + file)
     with open(full_path) as f:
-        game_map = json.load(f)
+        data = json.load(f)
 
-        if game_map is None:
+        if data is None:
             return None
 
-        return game_map
+        spawns = [
+            Spawn.from_dict(spawn_dict)
+            for spawn_dict in data.get("monster_spawns", [])
+        ]
+
+        return {
+            "map_name": data.get("map_name", ""),
+            "monster_spawns": spawns
+        }
 
 
-def modify_json_map(file: str, attribute: str, old_value: str, new_value: str):
-    full_path = os.path.join("./data/" + file)
-    with open(full_path) as read_file:
-        game_map = json.load(read_file)
-
-        for key in game_map.keys():
-            if key == 'monster_spawns':
-                for monster_spawn in game_map[key]:
-                    if monster_spawn[attribute] == old_value:
-                        monster_spawn[attribute] = new_value
-
-        with open(full_path, 'w') as write_file:
-            json.dump(game_map, write_file)
+def save_map(map_name: str, data: dict):
+    full_path = os.path.join("./data/" + map_name + ".json")
+    with open(full_path, 'w', encoding='utf-8') as write_file:
+        json.dump(data, write_file)
 
 
-def add_spawn(file: str, spawn: Spawn):
-    full_path = os.path.join("./data/" + file)
-    with open(full_path) as read_file:
-        game_map = json.load(read_file)
+def display_maps():
+    maps = []
+    path = os.path.join("./data/")
+    for file in os.listdir(path):
+        if file.endswith(".json"):
+            maps.append(file)
 
-        for key in game_map.keys():
-            if key == 'monster_spawns':
-                game_map[key].append(spawn.__dict__)
-
-    with open(full_path, 'w') as write_file:
-        json.dump(game_map, write_file)
-
-
-def delete_spawn(file: str, monster_name: str, position: dict):
-    not_in_map = True
-    full_path = os.path.join("./data/" + file)
-    with open(full_path) as read_file:
-        game_map = json.load(read_file)
-
-        for key in game_map.keys():
-            if key == 'monster_spawns':
-                for monster_spawn in game_map[key]:
-                    if monster_spawn["name"] == monster_name and monster_spawn["position"] == position:
-                        not_in_map = False
-                        game_map[key].remove(monster_spawn)
-
-        if not_in_map:
-            print("Spawn not found")
-
-    with open(full_path, 'w') as write_file:
-        json.dump(game_map, write_file)
-
-
-def populate_hcol_table(map_name: str) -> list:
-    game_map = read_json_map(map_name)
-    headerH = []
-    for key in game_map:
-        for value in game_map[key]:
+    spawn_nb = []
+    maps_avg = []
+    for map_name in maps:
+        data = read_json_map(map_name)
+        for key in data:
             if key == "monster_spawns":
-                for i in value:
-                    headerH.append(i) if i not in headerH else False
-    return headerH
+                average_level = []
+                spawn_nb.append(data[key])
+                for monster_spawn in data[key]:
+                    average_level.append(monster_spawn.level)
+                if len(average_level) > 0:
+                    maps_avg.append(int(round(sum(average_level) / len(average_level))))
+                else:
+                    maps_avg.append(0)
 
 
-def populate_vcol_table(map_name: str) -> list:
-    game_map = read_json_map(map_name)
-    headerV = []
-    for key in game_map:
-        for value in game_map[key]:
-            if key == "monster_spawns":
-                headerV.append(value["name"])
+    return {"maps": maps, "spawns": spawn_nb, "maps_avg": maps_avg}
 
-    return headerV
+
+def add_new_map(map_name: str):
+    path = os.path.join("./data/" + map_name + ".json")
+    with open(path, 'w', encoding='utf-8') as f:
+        json.dump({
+            "map_name": map_name,
+            "monster_spawns": []
+        }, f)
+
+def delete_map(map_name: str):
+    path = os.path.join("./data/" + map_name)
+    os.remove(path)
